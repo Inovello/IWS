@@ -1,0 +1,50 @@
+{{ define "main" }}
+<div class="wrap">
+<article class="writeup-page">
+  <a class="eyebrow back" href="/writeups/">← Writeups</a>
+
+  <div class="eyebrow accent article-eyebrow">
+    {{ partial "kind-label.html" . }} · <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 Jan 2006" }}</time> · {{ .ReadingTime }} min
+    {{- with .Params.updated }} · updated <time datetime="{{ . }}">{{ time.Format "2 Jan 2006" . }}</time>{{ end }}
+  </div>
+  <h1 class="article-title">{{ .Title }}</h1>
+  <p class="byline">{{ site.Params.author }}{{ with .Params.summary }} · {{ . }}{{ end }}</p>
+
+  {{- with .Params.stats }}
+  <div class="stats-grid article-stats">
+    {{- range . }}
+    <div class="stat">
+      <div class="stat-label">{{ .label }}</div>
+      <div class="stat-value{{ if .accent }} accent{{ end }}">{{ .value }}</div>
+    </div>
+    {{- end }}
+  </div>
+  {{- end }}
+
+  <div class="article-columns">
+    <div class="writeup prose">
+      {{ .Content }}
+    </div>
+    {{- with .Params.config }}
+    <aside class="run-config" aria-label="Run configuration">
+      <div class="run-config-box">
+        <div class="run-config-title">Run config</div>
+        {{- range . }}
+        <div class="run-config-row"><span class="k">{{ .k }}</span><span class="v">{{ .v }}</span></div>
+        {{- end }}
+      </div>
+    </aside>
+    {{- end }}
+  </div>
+
+  <footer class="article-foot">
+    {{- with .Params.discussion }}<a class="discuss" href="{{ . }}">Discuss on Reddit →</a>{{ end }}
+    <nav class="article-nav" aria-label="Writeup navigation">
+      {{- /* PrevInSection is the older post, NextInSection the newer one. */}}
+      {{- with .PrevInSection }}<a class="older" href="{{ .RelPermalink }}">← Older · {{ partial "kind-label.html" . }}: {{ .Title | truncate 44 }}</a>{{ end }}
+      {{- with .NextInSection }}<a class="newer" href="{{ .RelPermalink }}">Newer · {{ partial "kind-label.html" . }}: {{ .Title | truncate 44 }} →</a>{{ end }}
+    </nav>
+  </footer>
+</article>
+</div>
+{{ end }}

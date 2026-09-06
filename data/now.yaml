@@ -1,0 +1,39 @@
+# Home page: the stats strip and the "Currently open" panel.
+# Edit this file when the headline result changes. Keep `updated` honest.
+
+hardware_line: "dual Xeon E5-2696 v4 · 2x RTX 3090 · 192GB DDR4-2133 ECC · Ubuntu Server 24.04 · llama.cpp + vLLM"
+
+stats:
+  caption: "Current bench · Qwen3.8-Flash-Next UD-Q4_K_XL · 261k context · expert cache + MTP"
+  items:
+    - label: Decode
+      value: "41"
+      unit: t/s
+      accent: true
+    - label: Prefill
+      value: "190"
+      unit: t/s
+    - label: VRAM
+      value: "48"
+      unit: GB
+    - label: Host RAM
+      value: "192"
+      unit: GB
+
+now:
+  updated: "Sep 2026"
+  line: "Decode on Qwen3.8-Flash-Next is where I wanted it. Prefill with the experts in host RAM is the open problem."
+  items:
+    - tag: PR open
+      highlight: true
+      title: "llama.cpp #28223"
+      url: https://github.com/ggml-org/llama.cpp/pull/28223
+      text: >-
+        Keeps an explicit `-ot` host buffer override from being silently downgraded to a plain CPU
+        buffer under mmap, and reads pinned tensors from the file instead of faulting them through
+        the mapping. Prefill 166 to 379 t/s with 40 expert layers on the host; load 512 s to 168 s.
+    - tag: Tuning
+      title: "Qwen3.8-Flash-Next on 2x3090 + DDR4"
+      text: >-
+        17 to 41 t/s decode through the expert cache, UD-Q4_K_XL, and MTP speculative decoding.
+        Next: a proper comparison against Qwen3.8-27B at Q8, speed and quality, on the same box.

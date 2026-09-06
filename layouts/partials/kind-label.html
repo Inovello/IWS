@@ -1,0 +1,2 @@
+{{- /* "Note" for notes, "Part NN" when the writeup has a part number, else "Writeup". */ -}}
+{{- if eq .Params.kind "note" }}Note{{ else if .Params.part }}Part {{ printf "%02d" (int .Params.part) }}{{ else }}Writeup{{ end -}}

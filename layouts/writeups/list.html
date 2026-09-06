@@ -1,0 +1,9 @@
+{{ define "main" }}
+<div class="wrap">
+  <header class="page-head">
+    <h1 class="page-title">{{ .Title }}</h1>
+    {{- with .Params.tagline }}<p class="page-lede">{{ . }}</p>{{ end }}
+  </header>
+  {{ partial "writeup-list.html" .RegularPages }}
+</div>
+{{ end }}

@@ -1,0 +1,86 @@
+{{ define "main" }}
+{{- $now := hugo.Data.now }}
+{{- $writeups := where site.RegularPages "Section" "writeups" }}
+<div class="wrap">
+
+  <header class="hero">
+    <div class="hero-text">
+      <div class="eyebrow accent">@{{ site.Params.handle }} · local inference on consumer hardware</div>
+      <h1 class="hero-name">{{ site.Params.author }}</h1>
+      {{- with .Params.tagline }}<p class="hero-tagline">{{ . }}</p>{{ end }}
+    </div>
+    <img class="hero-avatar" src="/img/pfp.webp" alt="{{ site.Params.author }}" width="240" height="240">
+  </header>
+
+  <div class="intro prose">
+    {{ .Content }}
+  </div>
+
+  {{- with $now.stats }}
+  <section class="stats" aria-label="Current bench">
+    <div class="stats-caption"><span class="eyebrow">{{ .caption }}</span></div>
+    <div class="stats-grid">
+      {{- range .items }}
+      <div class="stat">
+        <div class="stat-label">{{ .label }}</div>
+        <div class="stat-value{{ if .accent }} accent{{ end }}">{{ .value }} <span class="stat-unit">{{ .unit }}</span></div>
+      </div>
+      {{- end }}
+    </div>
+  </section>
+  {{- end }}
+
+  {{- with $now.now }}
+  <section class="now">
+    <div class="now-head">
+      <span class="now-dot" aria-hidden="true"></span>
+      <span class="eyebrow now-title">Currently open</span>
+      <span class="now-updated">Updated {{ .updated }}</span>
+    </div>
+    <p class="now-line">{{ .line }}</p>
+    {{- range .items }}
+    <div class="now-item">
+      <span class="tag{{ if .highlight }} tag-amber{{ end }}">{{ .tag }}</span>
+      <div class="now-body">
+        {{- if .url }}<a class="now-item-title" href="{{ .url }}">{{ .title }}</a>{{ else }}<div class="now-item-title">{{ .title }}</div>{{ end }}
+        <p>{{ .text | markdownify }}</p>
+      </div>
+    </div>
+    {{- end }}
+  </section>
+  {{- end }}
+
+  <section class="home-section">
+    <div class="section-head">
+      <span class="eyebrow strong">Writeups</span>
+      <span class="rule"></span>
+      <a class="eyebrow accent" href="/writeups/">All →</a>
+    </div>
+    {{ partial "writeup-list.html" $writeups }}
+  </section>
+
+  {{- with hugo.Data.projects }}
+  <section class="home-section">
+    <div class="section-head">
+      <span class="eyebrow strong">Projects</span>
+      <span class="rule"></span>
+    </div>
+    <div class="project-grid">
+      {{- range .projects }}
+      <a class="project-card" href="{{ .url }}">
+        <div class="project-name">{{ .name }}</div>
+        <div class="eyebrow accent">{{ .meta }}</div>
+        <p>{{ .description }}</p>
+      </a>
+      {{- end }}
+    </div>
+  </section>
+  {{- end }}
+
+  <figure class="banner">
+    <img src="/img/banner.webp" alt="Workbench illustration: if it ain't broke, don't fix it" width="1600" height="533">
+    <figcaption><a href="/hardware/">The box</a> · {{ hugo.Data.now.hardware_line }}</figcaption>
+  </figure>
+
+</div>
+{{ end }}

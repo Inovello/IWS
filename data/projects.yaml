@@ -1,0 +1,22 @@
+# Projects shown on the home page. Order is display order.
+# meta is the small label under the name (language, licence, status).
+projects:
+  - name: kv-sparsity-profiler
+    url: https://github.com/Inovello/kv-sparsity-profiler
+    meta: Python · MIT
+    description: >-
+      Can query-selected KV paging fit a 262k context on a single 24GB GPU? Measured on
+      Qwen3.6-27B: no. Even a perfect oracle selector falls far short of the attention mass
+      needed. Harness plus the negative result, so nobody else has to run it.
+  - name: bitrebuttal
+    url: https://github.com/Inovello/bitrebuttal
+    meta: JavaScript
+    description: >-
+      Downloads that finish. A supervisor around aria2c for huge model files. Survives stalls,
+      expired links, and reboots without losing progress. SHA256-verified. Moved about 200GB with it.
+  - name: lifeos
+    url: https://github.com/Inovello/lifeos
+    meta: Python · AGPL-3.0
+    description: >-
+      Self-hosted personal organiser you talk to. Whisper, a local LLM, SQLite, FastAPI, and a
+      React PWA. Nothing leaves your machine. Runs end to end on 12GB of VRAM.

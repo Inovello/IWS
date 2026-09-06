@@ -1,0 +1,11 @@
+{{- /* ![alt](src "caption") renders a figure; the title text becomes the caption. */ -}}
+{{- $src := .Destination }}
+{{- $w := "" }}{{ $h := "" }}
+{{- with .Page.Resources.GetMatch .Destination }}
+  {{- $src = .RelPermalink }}
+  {{- if ne .MediaType.SubType "svg" }}{{ $w = .Width }}{{ $h = .Height }}{{ end }}
+{{- end }}
+<figure>
+  <img src="{{ $src }}" alt="{{ .PlainText }}" loading="lazy"{{ with $w }} width="{{ . }}"{{ end }}{{ with $h }} height="{{ . }}"{{ end }}>
+  {{- with .Title }}<figcaption>{{ . | markdownify }}</figcaption>{{ end }}
+</figure>

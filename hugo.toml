@@ -1,0 +1,43 @@
+baseURL = "https://inovello.dev/"
+locale = "en"
+title = "Inovello"
+timeZone = "UTC"
+
+# A post dated "today" is never treated as future, whatever timezone you write in.
+buildFuture = true
+buildDrafts = false
+enableRobotsTXT = true
+disableKinds = ["taxonomy", "term"]
+
+[params]
+  author = "Evans"
+  handle = "inovello"
+  description = "Benchmark writeups and failure notes on running large mixture-of-experts models on two RTX 3090s and 192 GB of DDR4."
+  github = "https://github.com/Inovello"
+  x = "https://x.com/inovelloE"
+  reddit = "https://www.reddit.com/user/Extension-Bid-639/"
+
+[outputs]
+  home = ["HTML", "RSS"]
+  section = ["HTML"]
+  page = ["HTML"]
+
+[outputFormats.RSS]
+  baseName = "index"
+
+[markup]
+  [markup.goldmark.renderer]
+    unsafe = false
+  [markup.highlight]
+    noClasses = false
+    lineNos = false
+    tabWidth = 2
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 3
+
+[minify]
+  disableXML = true
+
+[security]
+  enableInlineShortcodes = false
