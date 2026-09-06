@@ -21,7 +21,6 @@ Every number on this site comes from this machine unless the writeup says otherw
 | CUDA | Toolkit 12.0, driver 595.84 |
 | Inference | llama.cpp (production), vLLM for the dense models, ik_llama.cpp built for comparison |
 | Storage | NVMe for the model files (~1.2 GB/s single-threaded read measured during loads) |
-| Power | No UPS. Mains cuts during long runs are a recurring hazard and the reason every bench script is restartable |
 
 ## How the offload works
 
@@ -33,10 +32,3 @@ Two things about this box shape every result:
 
 - The two sockets are separate NUMA nodes and each GPU hangs off a different one. Where a page lands in memory can be worth 35% of decode. Everything runs under `numactl --interleave=all` for the pinned buffers and `--numa distribute` for the compute threads.
 - The quad-rank LRDIMMs run hot. Without forced air over the DIMM banks the memory controller starts throttling after a few minutes of sustained load, at a sensor reading of about 78 C. There is now a fan zip-tied over each bank. Part 2 of the Flash-Next writeups has the measurements.
-
-## Known quirks
-
-- Socket 1 logs corrected ECC errors under the pinned-expert workload and under nothing else. One DIMM was swapped by the seller for it. Corrected errors only, nothing has been silently wrong, but they cost latency when they burst.
-- Between 2026-09-04 and 2026-09-07 the box ran on four DIMMs instead of six while two were out for replacement. That is two memory channels per socket instead of three, and it measured 12 to 20% slower decode at the same cache hit rate. Results from those days say so.
-- GPU1 once fell off the bus after a power event. An NVMe drive was physically pushing on its seat. Reseated, no recurrence.
-- There is no BMC reachable from the OS, so DIMM temperatures are read straight from the memory controller's thermal registers with `setpci`.
