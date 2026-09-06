@@ -1,0 +1,10 @@
+// Cloudflare Workers static-assets config. The Worker has no code; it only serves ./public.
+{
+  "name": "iws",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./public",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}

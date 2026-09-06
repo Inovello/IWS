@@ -1,6 +1,6 @@
 # inovello.dev
 
-Static site, built with [Hugo](https://gohugo.io/) (extended edition), hosted on Cloudflare Pages. No theme, no JavaScript, no Node. Four templates and one stylesheet.
+Static site, built with [Hugo](https://gohugo.io/) (extended edition), hosted on Cloudflare Workers (static assets). No theme, no JavaScript, no Node. Four templates and one stylesheet.
 
 ## Publish a writeup
 
@@ -41,16 +41,16 @@ If you ever must move a post, add `aliases: ["/writeups/old-slug/"]` to its fron
 - `content/_index.md`: the intro paragraph and the tagline.
 - `content/hardware.md`: the box.
 
-## Cloudflare Pages settings
+## Cloudflare settings
 
 | Setting | Value |
 |---|---|
-| Build command | `hugo --minify` |
+| Build command | `bash cloudflare-build.sh` (downloads the pinned Hugo, then builds) |
 | Build output directory | `public` |
-| Environment variable | `HUGO_VERSION` = the version in `hugo version` locally (currently `0.165.0`) |
+| Deploy command | `npx wrangler deploy` (reads `wrangler.jsonc`, serves `public/`) |
 | Custom domains | `inovello.dev`, plus `www.inovello.dev` redirected to the apex |
 
-Pin `HUGO_VERSION`. Cloudflare's default can be old or change without notice.
+The Hugo version is pinned in `cloudflare-build.sh`. Change it there when you upgrade locally.
 
 ## Local install
 
