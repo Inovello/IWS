@@ -1,10 +1,11 @@
-# Home page: the stats strip and the "Currently open" panel.
-# Edit this file when the headline result changes. Keep `updated` honest.
+# Home page: the daily-driver strip and the "Currently open" panel.
+# `stats` is whatever model I actually serve to myself right now.
+# `now.items` is open work only. Anything finished belongs in a writeup, not here.
 
 hardware_line: "dual Xeon E5-2696 v4 · 2x RTX 3090 · 192GB DDR4-2133 ECC · Ubuntu Server 24.04 · llama.cpp + vLLM"
 
 stats:
-  caption: "Current bench · Qwen3.8-Flash-Next UD-Q4_K_XL · 261k context · expert cache + MTP"
+  caption: "Daily driver · Qwen3.8-Flash-Next UD-Q4_K_XL · 261k context · expert cache + MTP"
   items:
     - label: Decode
       value: "41"
@@ -38,9 +39,3 @@ now:
         Keeps an explicit `-ot` host buffer override from being silently downgraded to a plain CPU
         buffer under mmap, and reads pinned tensors from the file instead of faulting them through
         the mapping. Prefill 166 to 379 t/s with 40 expert layers on the host; load 512 s to 168 s.
-    - tag: Shipped
-      title: "Long-context decode, 9 to 12%"
-      url: /writeups/qwen3-flash-next-2x3090-topk/
-      text: >-
-        The sparse-attention indexer's top-k was sorting whole rows to pick sixteen entries. Radix
-        selection instead, measured across three seeds and checked with a 480-request quality screen.

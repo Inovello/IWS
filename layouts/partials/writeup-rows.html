@@ -1,0 +1,16 @@
+{{- /* One list of writeup rows. Expects a page collection. */ -}}
+<ol class="writeup-list">
+  {{- range . }}
+  <li class="writeup-list-item{{ if eq .Params.kind "note" }} is-note{{ end }}">
+    <a class="writeup-row" href="{{ .RelPermalink }}">
+      <span class="writeup-label">{{ partial "kind-label.html" . }}</span>
+      <span class="writeup-title">{{ .Title }}</span>
+      <span class="writeup-meta">
+        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 Jan 2006" }}</time>
+        <span class="writeup-mins">{{ .ReadingTime }} min</span>
+      </span>
+    </a>
+    {{- with .Params.summary }}<p class="writeup-summary">{{ . }}</p>{{ end }}
+  </li>
+  {{- end }}
+</ol>

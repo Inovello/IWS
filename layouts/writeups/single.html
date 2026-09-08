@@ -1,7 +1,11 @@
 {{ define "main" }}
+{{- $series := partial "series-name.html" . }}
+{{- $siblings := where (where site.RegularPages "Section" "writeups") "Params.series" .Params.series }}
 <div class="wrap">
 <article class="writeup-page">
   <a class="eyebrow back" href="/writeups/">← Writeups</a>
+
+  {{- with $series }}<div class="series-tag">{{ . }}</div>{{ end }}
 
   <div class="eyebrow accent article-eyebrow">
     {{ partial "kind-label.html" . }} · <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 Jan 2006" }}</time> · {{ .ReadingTime }} min
@@ -39,11 +43,12 @@
 
   <footer class="article-foot">
     {{- with .Params.discussion }}<a class="discuss" href="{{ . }}">Discuss on Reddit →</a>{{ end }}
-    <nav class="article-nav" aria-label="Writeup navigation">
-      {{- /* PrevInSection is the older post, NextInSection the newer one. */}}
-      {{- with .PrevInSection }}<a class="older" href="{{ .RelPermalink }}">← Older · {{ partial "kind-label.html" . }}: {{ .Title | truncate 44 }}</a>{{ end }}
-      {{- with .NextInSection }}<a class="newer" href="{{ .RelPermalink }}">Newer · {{ partial "kind-label.html" . }}: {{ .Title | truncate 44 }} →</a>{{ end }}
+    {{- if gt (len $siblings) 1 }}
+    <nav class="article-nav" aria-label="More in this series">
+      {{- with $siblings.Prev . }}<a class="older" href="{{ .RelPermalink }}">← {{ partial "kind-label.html" . }}: {{ .Title | truncate 46 }}</a>{{ end }}
+      {{- with $siblings.Next . }}<a class="newer" href="{{ .RelPermalink }}">{{ partial "kind-label.html" . }}: {{ .Title | truncate 46 }} →</a>{{ end }}
     </nav>
+    {{- end }}
   </footer>
 </article>
 </div>

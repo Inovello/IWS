@@ -1,0 +1,15 @@
+{{- /* Title with its series prefix, for the browser tab, RSS and link previews.
+       "Flash-Next part 3: A top-k fallback ..." rather than the bare page title. */ -}}
+{{- $t := .Title }}
+{{- with .Params.series }}
+  {{- $match := where hugo.Data.series.series "key" . }}
+  {{- with $match }}
+    {{- $short := (index . 0).short }}
+    {{- if $.Params.part }}
+      {{- $t = printf "%s part %d: %s" $short (int $.Params.part) $.Title }}
+    {{- else }}
+      {{- $t = printf "%s: %s" $short $.Title }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- $t -}}

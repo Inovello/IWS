@@ -1,0 +1,5 @@
+{{- /* Display name of a page's series, empty if it has none. */ -}}
+{{- with .Params.series }}
+  {{- $match := where hugo.Data.series.series "key" . }}
+  {{- with $match }}{{ (index . 0).name }}{{ end }}
+{{- end -}}

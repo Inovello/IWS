@@ -1,5 +1,6 @@
 ---
-title: "Qwen3.8-Flash-Next on 2x3090, part 3: a top-k fallback that was sorting far more than it needed to"
+title: "A top-k fallback that was sorting far more than it needed to"
+series: flash-next
 slug: qwen3-flash-next-2x3090-topk
 date: 2026-09-08
 kind: writeup

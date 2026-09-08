@@ -1,5 +1,6 @@
 ---
-title: "Qwen3.8-Flash-Next on 2x3090 + DDR4: 17 to 25-29 t/s decode with the expert cache PR"
+title: "17 to 25-29 t/s decode with the expert cache PR"
+series: flash-next
 slug: qwen3-flash-next-2x3090-expert-cache
 date: 2026-09-03
 kind: writeup

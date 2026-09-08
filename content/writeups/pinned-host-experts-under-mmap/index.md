@@ -1,5 +1,6 @@
 ---
 title: "A silent -ot downgrade under mmap, and a 9-line loader fix"
+series: upstream
 slug: pinned-host-experts-under-mmap
 date: 2026-09-05
 kind: note

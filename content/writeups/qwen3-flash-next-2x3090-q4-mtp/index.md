@@ -1,5 +1,6 @@
 ---
-title: "Qwen3.8-Flash-Next on 2x3090 + DDR4, part 2: 25-29 to 37-41 t/s with UD-Q4_K_XL, the expert cache, and MTP"
+title: "25-29 to 37-41 t/s with UD-Q4_K_XL and MTP"
+series: flash-next
 slug: qwen3-flash-next-2x3090-q4-mtp
 date: 2026-09-04
 kind: writeup

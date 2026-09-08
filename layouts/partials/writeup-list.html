@@ -1,16 +1,28 @@
-{{- /* Expects a page collection. Renders one row per writeup. */ -}}
-<ol class="writeup-list">
-  {{- range . }}
-  <li class="writeup-list-item{{ if eq .Params.kind "note" }} is-note{{ end }}">
-    <a class="writeup-row" href="{{ .RelPermalink }}">
-      <span class="writeup-label">{{ partial "kind-label.html" . }}</span>
-      <span class="writeup-title">{{ .Title }}</span>
-      <span class="writeup-meta">
-        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2 Jan 2006" }}</time>
-        <span class="writeup-mins">{{ .ReadingTime }} min</span>
-      </span>
-    </a>
-    {{- with .Params.summary }}<p class="writeup-summary">{{ . }}</p>{{ end }}
-  </li>
+{{- /* Expects a page collection. Groups writeups by series, in the order set in data/series.yaml. */ -}}
+{{- $pages := . }}
+{{- $keys := slice }}
+{{- range hugo.Data.series.series }}{{ $keys = $keys | append .key }}{{ end }}
+
+{{- range $s := hugo.Data.series.series }}
+  {{- $group := where $pages "Params.series" $s.key }}
+  {{- with $group }}
+  <section class="series">
+    <div class="series-head">
+      <h2 class="series-name">{{ $s.name }}</h2>
+      {{- with $s.note }}<p class="series-note">{{ . }}</p>{{ end }}
+    </div>
+    {{ partial "writeup-rows.html" . }}
+  </section>
   {{- end }}
-</ol>
+{{- end }}
+
+{{- /* Anything not assigned to a known series still shows up. */ -}}
+{{- $loose := where $pages "Params.series" "not in" $keys }}
+{{- with $loose }}
+<section class="series">
+  <div class="series-head">
+    <h2 class="series-name">Other</h2>
+  </div>
+  {{ partial "writeup-rows.html" . }}
+</section>
+{{- end }}

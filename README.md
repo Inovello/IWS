@@ -9,11 +9,12 @@ Static site, built with [Hugo](https://gohugo.io/) (extended edition), hosted on
 
    ```yaml
    ---
-   title: "Title as it appears on the page"
+   title: "Short title. The series name supplies the context, so don't repeat it here."
+   series: flash-next               # a key from data/series.yaml
    slug: short-stable-slug          # the URL. Never change it after publishing.
-   date: 2026-09-06
+   date: 2026-09-20
    kind: writeup                    # or: note
-   part: 3                          # optional. Shows "Part 03" in lists.
+   part: 4                          # optional. Numbers within the series, not across the site.
    summary: "One sentence. Shown in the list and used as the meta description."
    draft: true                      # remove or set false to publish
    discussion: https://reddit.com/... # optional. "Discuss on Reddit" link.
@@ -28,6 +29,10 @@ Static site, built with [Hugo](https://gohugo.io/) (extended edition), hosted on
    ---
    ```
 
+   A new model, or a new line of work, gets a new entry in `data/series.yaml` and its own
+   part numbering starting at 1. Writeups group by series on the home and writeups pages,
+   and the previous/next links at the foot of an article stay inside the series.
+
 3. Body is plain Markdown. A `## Setup` heading followed by a bullet list renders as a boxed setup block. Images: `![alt](file.png "Caption")` renders a figure with the caption. Tables scroll sideways on narrow screens.
 4. Preview: `hugo server -D` in this folder, then open http://localhost:1313. `-D` shows drafts.
 5. Commit and push to `main`. Cloudflare builds and deploys in about a minute.
@@ -36,7 +41,8 @@ If you ever must move a post, add `aliases: ["/writeups/old-slug/"]` to its fron
 
 ## Home page data
 
-- `data/now.yaml`: the stats strip and the "Currently open" panel. Edit `updated` when you edit the rest.
+- `data/now.yaml`: the daily-driver strip and the "Currently open" panel. Open work only in that panel; anything finished belongs in a writeup. Edit `updated` when you edit the rest.
+- `data/series.yaml`: the writeup groups, in display order.
 - `data/projects.yaml`: the project cards.
 - `content/_index.md`: the intro paragraph and the tagline.
 - `content/hardware.md`: the box.
