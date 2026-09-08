@@ -23,7 +23,7 @@ stats:
 
 now:
   updated: "Sep 2026"
-  line: "Decode is where I wanted it. Prefill is next, and the profile says the time is going over the PCIe bus rather than into the GPUs."
+  line: "Prefill is the problem now. Most of it goes on moving weights, not multiplying them."
   items:
     - tag: Profiling
       highlight: true
