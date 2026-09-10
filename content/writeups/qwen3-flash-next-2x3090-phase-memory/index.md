@@ -47,7 +47,7 @@ Then the same 480-request quality screen as part 3, because a change that touche
 
 ## Setup
 
-- Box: [dual Xeon E5-2696 v4, 2x RTX 3090 on PCIe 3.0](/hardware/), now on six 32 GB ECC DIMMs. The quality screen predates the DIMM swap and ran on four; every table says which
+- Box: [dual Xeon E5-2696 v4, 2x RTX 3090 on PCIe 3.0](/hardware/), back on all six 32 GB DIMMs. The quality screen predates their return and ran on four; every table says which
 - Model: Qwen3.8-Flash-Next UD-Q4_K_XL, expert cache at 150 slots, shared Q8_0 MTP head at draft depth 3 on the second GPU
 - Allocated context 261,888, f16 KV, server micro-batch 512, prefill micro-batch 2048 on the candidate, CUDA toolkit 12.0
 - Throughput at 8k: a fresh 8,192-token document followed by a 2,048-token continuation, greedy, two fresh processes per arm
