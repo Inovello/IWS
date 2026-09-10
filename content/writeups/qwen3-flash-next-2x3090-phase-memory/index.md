@@ -3,6 +3,7 @@ title: "The expert cache moves out of the way while the prompt runs"
 series: flash-next
 slug: qwen3-flash-next-2x3090-phase-memory
 date: 2026-09-10
+updated: 2026-09-10
 kind: writeup
 part: 4
 summary: "Releasing the expert cache and the decode buffers for the length of a prompt lets prefill run at a 2048-token micro-batch: 2.2x faster at 8k and 2.4 to 2.5x at 37k to 119k, with decode unchanged and a 240-pair quality screen finding no consistent regression."
@@ -158,11 +159,32 @@ Two more memory channels helped the configuration that streams the expert set fo
 
 For this box the compromise is gone: the cache stays at 150 slots and prefill runs at 2048. It has been the configuration I serve since it passed the screen.
 
-It is narrow on purpose. The code accepts a prefill micro-batch of exactly 512 or 2048, a cache of exactly 150 slots, one sequence, batch 4096 and the MTP head as the only draft, and refuses anything else at startup. Those are the values it was qualified on, not the limits of the idea. It is CUDA only, one machine, one model, one quantization, 8k to 119k. I have not measured above 119k, other models, other slot counts, or the no-MTP configuration.
+It is narrow on purpose. The code accepts a prefill micro-batch of exactly 512 or 2048, a cache of exactly 150 slots, one sequence, batch 4096 and the MTP head as the only draft, and refuses anything else at startup. Those are the values it was qualified on, not the limits of the idea (two of them have since moved; see the update below). It is CUDA only, one machine, one model, one quantization, 8k to 119k. I have not measured above 119k, other models, other slot counts, or the no-MTP configuration.
 
 The profile that motivated this is also what says where the time still goes. On the new configuration an 8k prompt still uploads 278 GB to the first GPU, which is 3.6 times the size of the expert set, and that upload is 72% of the 37 seconds to first token. Kernels are under 4 seconds and nothing overlaps them. So the micro-batch change bought the easy factor of four, and the expert set is still crossing PCIe more than three times per prompt.
 
 The source is on [my fork as `flashnext-e06`](https://github.com/Inovello/llama.cpp/tree/flashnext-e06): the part 2 branch plus this change and a few inert diagnostic switches. The notes at the root of the branch have the launch line the numbers were measured with and the values the code insists on. The quality corpus is private, as before.
+
+## Update, 10 September
+
+Two changes since this went up, both on the branch.
+
+The swap is gated on prompt length now. Every prompt batch over eight tokens used to take it, so a short follow-up on a cached conversation paid the whole release and restore for nothing; john006868 on the Reddit thread pointed at it within hours. A new environment variable, `LLAMA_PHASE_PREFILL_MIN_TOKENS`, counts the tokens a prompt still has to process (the prompt minus the cached prefix) and skips the swap below it. Rather than derive the threshold from the transition timers, I measured it: the same follow-ups with the swap forced on and forced off, 64 to 4096 new tokens, five each, on an 8k and a 37k cached prefix, one generated token per request. Median prompt time in seconds, off / on:
+
+| New tokens | 8k prefix | 37k prefix |
+|---:|---|---|
+| 64 | 3.3 / 5.7 | 3.4 / 5.9 |
+| 256 | 5.3 / 7.8 | 5.6 / 8.2 |
+| 512 | 6.4 / 8.9 | 6.5 / 9.1 |
+| 1024 | 12.8 / 15.6 | 13.1 / 16.1 |
+| 2048 | 23.7 / 17.9 | 25.7 / 18.3 |
+| 4096 | 47.8 / 27.7 | 50.0 / 28.2 |
+
+The swap costs about 2.5 s on a short turn in that setup and first pays off at 2048 new tokens. The break-even lies between 1024 and 2048 and I did not measure it more finely; production runs at 2048. Two things about that number. The saving per token is not flat below one 2048 batch, because a partial pass touches fewer experts, so an overhead-over-saving estimate lands near 800 and is wrong. And the restore re-uploads whatever the cache held when it was released, so after a long reply the fixed cost is nearer 4 to 4.5 s, which is what chat-style follow-ups measured at 37k and 119k. That moves the break-even up, not down.
+
+The cache capacity is no longer pinned to 150. The transaction records the capacity when it begins and checks the restore against that, so the invariant is unchanged and other `--moe-expert-cache` values run. 150 is still the only count measured for speed and quality; 120 was smoke-tested for the mechanism. A prefill micro-batch of 4096 is accepted as well; on this box the reserve needs about 14 GiB on the draft card at the first swap and fails, so there is no number for it here.
+
+Production has run with the threshold since the same afternoon: decode and fresh prefill level with the ungated build, short follow-ups back at the previous cost.
 
 ## Next
 
