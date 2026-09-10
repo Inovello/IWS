@@ -5,14 +5,14 @@
 hardware_line: "dual Xeon E5-2696 v4 · 2x RTX 3090 · 192GB DDR4-2133 ECC · Ubuntu Server 24.04 · llama.cpp + vLLM"
 
 stats:
-  caption: "Daily driver · Qwen3.8-Flash-Next UD-Q4_K_XL · 261k context · expert cache + MTP"
+  caption: "Daily driver · Qwen3.8-Flash-Next UD-Q4_K_XL · 261k context · expert cache + MTP · phase-memory prefill"
   items:
     - label: Decode
       value: "41"
       unit: t/s
       accent: true
     - label: Prefill
-      value: "190"
+      value: "224"
       unit: t/s
     - label: VRAM
       value: "48"
@@ -23,19 +23,20 @@ stats:
 
 now:
   updated: "Sep 2026"
-  line: "Prefill is the problem now. Most of it goes on moving weights, not multiplying them."
+  line: "Prefill is a factor of four better and still spends most of its time moving the same weights more than once."
   items:
-    - tag: Profiling
+    - tag: Next
       highlight: true
-      title: "Prefill on long documents"
+      title: "Uploading each expert once per prompt"
       text: >-
-        A traced 8k-token request spends about 74 seconds moving weights host to device on the first
-        GPU against roughly 5 seconds of kernel time. So the target is repeated expert upload volume,
-        not the kernels. Reading the existing staging and prefetch work before writing anything.
+        After part 4 an 8k prompt still moves 278 GB to the first GPU, 3.6 times the expert set, and that is
+        72% of the time to first token. A patch that shares one staged copy across the consumers in a batch
+        is written and reviewed, not built. The bar: at least 1.5x on prefill, decode within 3%, the same
+        quality screen.
     - tag: PR open
-      title: "llama.cpp #28223"
-      url: https://github.com/ggml-org/llama.cpp/pull/28223
+      title: "llama.cpp #28671"
+      url: https://github.com/ggml-org/llama.cpp/pull/28671
       text: >-
-        Keeps an explicit `-ot` host buffer override from being silently downgraded to a plain CPU
-        buffer under mmap, and reads pinned tensors from the file instead of faulting them through
-        the mapping. Prefill 166 to 379 t/s with 40 expert layers on the host; load 512 s to 168 s.
+        Radix-select top-k in the CUB fallback for wide rows, the change behind part 3. Waiting on
+        workflow approval. #28223 (host buffer overrides under mmap) is closed for now under the
+        one-open-PR rule for new contributors and comes back after this one.
